@@ -1,188 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Ascension: Cube-Bearer Trial</title>
+<title>Pixel Kick Mini Game</title>
 <style>
     body {
-        background: #0a0f1f;
-        color: #cce6ff;
-        font-family: Arial, sans-serif;
-        padding: 20px;
-    }
-    #game-box {
-        background: #11182e;
-        padding: 20px;
-        border-radius: 10px;
-        width: 600px;
-        margin: auto;
-        box-shadow: 0 0 20px #4da6ff;
-    }
-    button {
-        background: #1a75ff;
+        background: #1a1a1a;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: monospace;
         color: white;
-        border: none;
-        padding: 12px 20px;
-        margin: 10px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 16px;
     }
-    button:hover {
-        background: #5599ff;
-    }/* Fade in the story text */
-#story {
-    animation: fadeIn 0.8s ease;
-}
 
-/* Fade-in animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+    #game {
+        width: 400px;
+        height: 250px;
+        background: #222;
+        border: 4px solid #00eaff;
+        position: relative;
+        image-rendering: pixelated;
+    }
 
-/* Buttons slide in */
-button {
-    animation: slideIn 0.5s ease;
-}
+    /* Pixel character */
+    #player {
+        width: 20px;
+        height: 20px;
+        background: #4affff;
+        position: absolute;
+        left: 50px;
+        top: 150px;
+    }
 
-@keyframes slideIn {
-    from { opacity: 0; transform: translateX(-20px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-/* Button hover glow */
-button:hover {
-    background: #5599ff;
-    box-shadow: 0 0 10px #4da6ff;
-    transform: scale(1.05);
-    transition: 0.2s;
-}
-
-/* Story text glowing pulse */
-#story {
-    animation: fadeIn 0.8s ease, pulse 3s infinite ease-in-out;
-}
-
-@keyframes pulse {
-    0% { text-shadow: 0 0 5px #4da6ff; }
-    50% { text-shadow: 0 0 15px #80c1ff; }
-    100% { text-shadow: 0 0 5px #4da6ff; }
-}
-
+    /* Pixel ball */
+    #ball {
+        width: 15px;
+        height: 15px;
+        background: #ffffff;
+        border-radius: 50%;
+        position: absolute;
+        left: 120px;
+        top: 155px;
+    }
 </style>
 </head>
 <body>
 
-<div id="game-box">
-    <h1>ASCENSION: Cube-Bearer Trial</h1>
-    <p id="story">Type START to begin your journey.</p>
-    <div id="choices"></div>
+<div id="game">
+    <div id="player"></div>
+    <div id="ball"></div>
 </div>
 
 <script>
-let stage = "intro";
+let player = document.getElementById("player");
+let ball = document.getElementById("ball");
 
-function updateStory(text, options = []) {
-    document.getElementById("story").innerText = text;
+let px = 50;
+let py = 150;
 
-    let choiceBox = document.getElementById("choices");
-    choiceBox.innerHTML = "";
+let bx = 120;
+let by = 155;
 
-    options.forEach(opt => {
-        let btn = document.createElement("button");
-        btn.innerText = opt.label;
-        btn.onclick = () => opt.action();
-        choiceBox.appendChild(btn);
-    });
-}
+let ballSpeedX = 0;
+let ballSpeedY = 0;
 
-function startGame() {
-    stage = "trial1";
-    updateStory(
-        "The cube glows. A single arrow flashes: RIGHT.",
-        [
-            { label: "MOVE RIGHT", action: trial1 },
-            { label: "MOVE LEFT", action: trial1 },
-            { label: "HOVER UP", action: trial1 },
-            { label: "STAY STILL", action: trial1 }
-        ]
-    );
-}
-document.getElementById("story").style.animation = "none";
-void document.getElementById("story").offsetWidth;
-document.getElementById("story").style.animation = "";
+document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") px += 5;
+    if (e.key === "ArrowLeft") px -= 5;
+    if (e.key === "ArrowUp") py -= 5;
+    if (e.key === "ArrowDown") py += 5;
 
+    // Kick the ball (spacebar)
+    if (e.key === " ") {
+        let dx = bx - px;
+        let dy = by - py;
 
-function trial1() {
-    stage = "trial2";
-    updateStory(
-        "Trial Two begins. Arrows flash rapidly around you.",
-        [
-            { label: "MOVE LEFT", action: trial2 },
-            { label: "DOUBLE FORWARD", action: trial2 },
-            { label: "HOVER UP", action: trial2 },
-            { label: "DROP DOWN", action: trial2 }
-        ]
-    );
-}
+        // If close enough, kick
+        if (Math.abs(dx) < 25 && Math.abs(dy) < 25) {
 
-function trial2() {
-    stage = "trial3";
-    updateStory(
-        "Trial Three: Momentum. A long moving course appears.",
-        [
-            { label: "WALK", action: trial3 },
-            { label: "HOVER FORWARD", action: trial3 },
-            { label: "DOUBLE FORWARD", action: trial3 },
-            { label: "MIX MOVES", action: trial3 }
-        ]
-    );
-}
-
-function trial3() {
-    stage = "final";
-    updateStory(
-        "Final Trial: Ascension. A vertical spiral rises into the sky.",
-        [
-            { label: "LEAP", action: finalTrial },
-            { label: "HOVER UP", action: finalTrial },
-            { label: "DOUBLE FORWARD", action: finalTrial },
-            { label: "SECRET PATH", action: finalTrial }
-        ]
-    );
-}
-
-function finalTrial() {
-    stage = "ending";
-    updateStory(
-        "You reach the Ascension Core. The chamber waits for your final move.",
-        [
-            { label: "WALK TO THE CORE", action: ending },
-            { label: "HOVER TO THE CORE", action: ending },
-            { label: "DOUBLE FORWARD", action: ending },
-            { label: "LET THE CUBE CONNECT", action: ending }
-        ]
-    );
-}
-
-function ending() {
-    updateStory(
-        "Ascension complete. You are now Cube‑Bearer Prime. The tower bows to your presence.",
-        []
-    );
-}
-
-document.addEventListener("keydown", function(e) {
-    if (e.key.toLowerCase() === "start") startGame();
-});
-
-updateStory("Type START to begin your journey.", [
-    { label: "START", action: startGame }
-]);
-</script>
-
-</body>
-</html>
 
 
