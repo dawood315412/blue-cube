@@ -30,7 +30,46 @@
     }
     button:hover {
         background: #5599ff;
-    }
+    }/* Fade in the story text */
+#story {
+    animation: fadeIn 0.8s ease;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Buttons slide in */
+button {
+    animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Button hover glow */
+button:hover {
+    background: #5599ff;
+    box-shadow: 0 0 10px #4da6ff;
+    transform: scale(1.05);
+    transition: 0.2s;
+}
+
+/* Story text glowing pulse */
+#story {
+    animation: fadeIn 0.8s ease, pulse 3s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { text-shadow: 0 0 5px #4da6ff; }
+    50% { text-shadow: 0 0 15px #80c1ff; }
+    100% { text-shadow: 0 0 5px #4da6ff; }
+}
+
 </style>
 </head>
 <body>
@@ -70,6 +109,10 @@ function startGame() {
         ]
     );
 }
+document.getElementById("story").style.animation = "none";
+void document.getElementById("story").offsetWidth;
+document.getElementById("story").style.animation = "";
+
 
 function trial1() {
     stage = "trial2";
